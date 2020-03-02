@@ -15,6 +15,12 @@ type GroupOfCells struct {
 	size        int
 }
 
+type cell struct {
+	value uint8
+	left  *cell
+	right *cell
+}
+
 //NewGroupOfCells creates a new group of cells from the given array.
 func NewGroupOfCells(arr []uint8) *GroupOfCells {
 	index := 0
@@ -61,6 +67,17 @@ func (gpc GroupOfCells) String() string {
 	return output
 }
 
+func (gpc GroupOfCells) ToSlice() []uint8 {
+	cells := make([]uint8, 0)
+	cell := gpc.farLeftCell
+	for cell.right != nil {
+		cells = append(cells, cell.value)
+		cell = cell.right
+	}
+	cells = append(cells, cell.value)
+	return cells
+}
+
 //Compete advances the current group of cells by the given amount
 func (gpc GroupOfCells) Compete(days int) {
 	for i := 0; i < days; i++ {
@@ -99,10 +116,4 @@ func findRightCellsValue(currentCellPointer *cell) uint8 {
 	}
 
 	return rightValue
-}
-
-type cell struct {
-	value uint8
-	left  *cell
-	right *cell
 }
